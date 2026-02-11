@@ -76,6 +76,8 @@ public class CuentaBancaria {
      */
     private List<Movimiento> movimientos;
 
+    //Lista de movimientos realizados en la cuenta bancaria this.
+
 
     // ============================================================================
     // CONSTRUCTOR
@@ -254,10 +256,8 @@ public class CuentaBancaria {
             movimientos.remove(0);
         }
 
-        // Añadir el nuevo movimiento a la lista
-        movimientos.add(mov);
 
-        // Obtener el saldo actual en la divisa del movimiento
+        movimientos.add(mov);
         long saldoActual = getSaldo(mov.getDivisa());
 
         // Calcular el nuevo saldo según si es débito o crédito
@@ -266,11 +266,11 @@ public class CuentaBancaria {
             // Si es débito, restar el importe total (importe + comisión)
             nuevoSaldo = saldoActual - mov.getImporteTotal();
         } else {
-            // Si es crédito, sumar solo el importe (sin comisión)
+            // Si es crédito sumar solo el importe (sin comisión)
             nuevoSaldo = saldoActual + mov.getImporte();
         }
 
-        // Actualizar el saldo en el mapa
+        // Actualizar el saldo
         saldos.put(mov.getDivisa(), nuevoSaldo);
     }
 

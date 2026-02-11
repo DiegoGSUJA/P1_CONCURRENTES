@@ -162,7 +162,7 @@ public class GestorCuentas {
         // Obtener la cuenta del Optional
         CuentaBancaria cuenta = optCuenta.get();
 
-        // Verificar el estado y cambiar a ACTIVA si corresponde
+        // Verificar el estado y cambiar a ACTIVA si hace falta
         if (cuenta.getEstado() == EstadoCuenta.PENDIENTE_ACTIVACION) {
             cuenta.setEstado(EstadoCuenta.ACTIVA);
             return true;
@@ -190,7 +190,7 @@ public class GestorCuentas {
             return false;
         }
 
-        CuentaBancaria c = optCuenta.get();
+        CuentaBancaria c = optCuenta.get(); //El opt sin objeto no te devuelve como es obvio.
 
         if (c.getEstado() == EstadoCuenta.ACTIVA) {
             c.setEstado(EstadoCuenta.BLOQUEADA);
@@ -237,11 +237,11 @@ public class GestorCuentas {
      * @param descripcion descripción del ingreso
      * @return true si se realizó correctamente, false en caso contrario
      */
-    public boolean realizarIngreso(String iban, long cantidad, Divisa divisa,
-                                   String descripcion) {
+    public boolean realizarIngreso(String iban, long cantidad, Divisa divisa, String descripcion) {
         if (cantidad <= 0) {
             return false;
         }
+
 
         Optional<CuentaBancaria> optCuenta = buscarCuenta(iban);
         if (!optCuenta.isPresent()) {
@@ -255,6 +255,8 @@ public class GestorCuentas {
 
         Movimiento m = new Movimiento(Instant.now(), TipoMovimiento.INGRESO,
                                       cantidad, divisa, descripcion, 0L);
+
+        //Ultimo paso...
         cuenta.registrarMovimiento(m);
 
         return true;
@@ -291,6 +293,10 @@ public class GestorCuentas {
      */
     public boolean realizarRetirada(String iban, long cantidad, Divisa divisa,
                                     String descripcion, TipoComision tipoComision) {
+
+
+        //Cuidado hay que ponerlo en todos, sino no pasa....
+
         if (cantidad <= 0) {
             return false;
         }
@@ -374,12 +380,11 @@ public class GestorCuentas {
         Optional<CuentaBancaria> optOrigen = buscarCuenta(ibanOrigen);
         Optional<CuentaBancaria> optDestino = buscarCuenta(ibanDestino);
 
-        // Validar que ambas existen
+        //Existen
         if (!optOrigen.isPresent() || !optDestino.isPresent()) {
             return false;
         }
 
-        // Obtener las cuentas de los Optional
         CuentaBancaria origen = optOrigen.get();
         CuentaBancaria destino = optDestino.get();
 
@@ -388,8 +393,6 @@ public class GestorCuentas {
             destino.getEstado() != EstadoCuenta.ACTIVA) {
             return false;
         }
-
-        // Calcular comisión
         long comision = tipoComision.calcularComision(cantidad);
 
         // Validar saldo suficiente en origen
@@ -411,7 +414,7 @@ public class GestorCuentas {
                                                "Transferencia de " + origen.getTitular(),
                                                0L);
 
-        // Registrar ambos movimientos
+        //Fin
         origen.registrarMovimiento(movOrigen);
         destino.registrarMovimiento(movDestino);
 
@@ -440,6 +443,7 @@ public class GestorCuentas {
         sb.append("GestorCuentas[").append(cuentas.size()).append(" cuentas");
 
         if (!cuentas.isEmpty()) {
+            //No confunir
             sb.append(": ");
             boolean primero = true;
             for (String iban : cuentas.keySet()) {

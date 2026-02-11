@@ -180,6 +180,7 @@ public class Movimiento {
      * @return importe total en céntimos (importe + comisión)
      */
     public long getImporteTotal() {
+        //Sumamos el importe con la comision dada.
         return importe + comision;
     }
 
@@ -207,6 +208,8 @@ public class Movimiento {
         return tipo == TipoMovimiento.RETIRADA ||
                tipo == TipoMovimiento.TRANSFERENCIA_ENVIADA ||
                tipo == TipoMovimiento.COMISION;
+
+        //Alguna de las tres opciones es si o si.
     }
 
 
@@ -237,6 +240,8 @@ public class Movimiento {
     public String toString() {
         long importeUnidades = importe / 100;
         long importeDecimales = importe % 100;
+
+        //Al reves tambien funciona.
 
         StringBuilder sb = new StringBuilder();
         sb.append(tipo).append(": ")
