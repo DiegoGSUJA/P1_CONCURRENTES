@@ -10,21 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Gestor centralizado para la administración de cuentas bancarias.
- *
- * Esta clase actúa como fachada del sistema, proporcionando operaciones de alto nivel
- * sobre el conjunto de cuentas del banco:
- * - Creación y búsqueda de cuentas
- * - Activación y bloqueo de cuentas
- * - Operaciones bancarias (ingresos, retiradas, transferencias)
- *
- * IMPORTANTE PARA CONCURRENCIA FUTURA:
- * En prácticas posteriores, esta clase coordinará el acceso concurrente a las cuentas,
- * garantizando que múltiples hilos puedan operar de forma segura y consistente.
- *
- * @author [Tu nombre]
- */
+
 public class GestorCuentas {
 
     // ============================================================================
@@ -84,20 +70,14 @@ public class GestorCuentas {
      */
     public Optional<CuentaBancaria> crearCuenta(String iban, String titular,
                                                 TipoCuenta tipo) {
-
-        // Verificar si el IBAN ya existe
         if (cuentas.containsKey(iban)) {
             return Optional.empty();
         }
 
-        // Crear nueva cuenta
-        CuentaBancaria cuenta = new CuentaBancaria(iban, titular, tipo);
+        CuentaBancaria nueva = new CuentaBancaria(iban, titular, tipo);
+        cuentas.put(iban, nueva);
 
-        // Añadir la cuenta al mapa
-        cuentas.put(iban, cuenta);
-
-        // Devolver Optional con la cuenta creada
-        return Optional.of(cuenta);
+        return Optional.of(nueva);
     }
 
     /**
@@ -205,10 +185,10 @@ public class GestorCuentas {
             return false;
         }
 
-        CuentaBancaria cuenta = optCuenta.get();
+        CuentaBancaria c = optCuenta.get();
 
-        if (cuenta.getEstado() == EstadoCuenta.ACTIVA) {
-            cuenta.setEstado(EstadoCuenta.BLOQUEADA);
+        if (c.getEstado() == EstadoCuenta.ACTIVA) {
+            c.setEstado(EstadoCuenta.BLOQUEADA);
             return true;
         }
 
@@ -254,31 +234,23 @@ public class GestorCuentas {
      */
     public boolean realizarIngreso(String iban, long cantidad, Divisa divisa,
                                    String descripcion) {
-
-        // Validar que cantidad > 0
         if (cantidad <= 0) {
             return false;
         }
 
-        // Buscar la cuenta y validar que existe
         Optional<CuentaBancaria> optCuenta = buscarCuenta(iban);
         if (!optCuenta.isPresent()) {
             return false;
         }
 
         CuentaBancaria cuenta = optCuenta.get();
-
-        // Validar que la cuenta está ACTIVA
         if (cuenta.getEstado() != EstadoCuenta.ACTIVA) {
             return false;
         }
 
-        // Crear el movimiento de tipo INGRESO con comisión 0
-        Movimiento mov = new Movimiento(Instant.now(), TipoMovimiento.INGRESO,
-                                        cantidad, divisa, descripcion, 0L);
-
-        // Registrar el movimiento en la cuenta
-        cuenta.registrarMovimiento(mov);
+        Movimiento m = new Movimiento(Instant.now(), TipoMovimiento.INGRESO,
+                                      cantidad, divisa, descripcion, 0L);
+        cuenta.registrarMovimiento(m);
 
         return true;
     }
@@ -314,39 +286,30 @@ public class GestorCuentas {
      */
     public boolean realizarRetirada(String iban, long cantidad, Divisa divisa,
                                     String descripcion, TipoComision tipoComision) {
-
-        // Validar cantidad > 0
         if (cantidad <= 0) {
             return false;
         }
 
-        // Buscar cuenta y validar que existe
         Optional<CuentaBancaria> optCuenta = buscarCuenta(iban);
         if (!optCuenta.isPresent()) {
             return false;
         }
 
         CuentaBancaria cuenta = optCuenta.get();
-
-        // Validar que está ACTIVA
         if (cuenta.getEstado() != EstadoCuenta.ACTIVA) {
+
             return false;
+
         }
 
-        // Calcular la comisión
         long comision = tipoComision.calcularComision(cantidad);
-
-        // Validar saldo suficiente (cantidad + comision)
         if (!cuenta.tieneSaldoSuficiente(cantidad + comision, divisa)) {
             return false;
         }
 
-        // Crear movimiento RETIRADA con la comisión
-        Movimiento mov = new Movimiento(Instant.now(), TipoMovimiento.RETIRADA,
-                                        cantidad, divisa, descripcion, comision);
-
-        // Registrar movimiento
-        cuenta.registrarMovimiento(mov);
+        Movimiento m = new Movimiento(Instant.now(), TipoMovimiento.RETIRADA,
+                                      cantidad, divisa, descripcion, comision);
+        cuenta.registrarMovimiento(m);
 
         return true;
     }

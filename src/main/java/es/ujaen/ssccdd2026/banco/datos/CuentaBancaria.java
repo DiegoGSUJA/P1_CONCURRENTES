@@ -157,46 +157,14 @@ public class CuentaBancaria {
         return estado;
     }
 
-    /**
-     * TODO: Implementar setter para estado
-     *
-     * @param estado nuevo estado de la cuenta
-     */
     public void setEstado(EstadoCuenta estado) {
         this.estado = estado;
     }
 
-    /**
-     * Devuelve el mapa de saldos por divisa.
-     *
-     * IMPORTANTE - COPIA DEFENSIVA:
-     * Este método debe devolver una COPIA del mapa interno, no el mapa original.
-     * Esto evita que código externo modifique directamente los saldos sin control.
-     *
-     * TODO: Devolver una copia del mapa de saldos
-     *
-     * PISTA: Para crear una copia de un mapa:
-     *        return new HashMap<>(this.saldos);
-     *
-     * @return copia del mapa de saldos (Divisa -> céntimos)
-     */
     public Map<Divisa, Long> getSaldos() {
         return new HashMap<>(this.saldos);
     }
 
-    /**
-     * Devuelve la lista de movimientos.
-     *
-     * IMPORTANTE - COPIA DEFENSIVA:
-     * Similar al método anterior, debe devolver una COPIA de la lista.
-     *
-     * TODO: Devolver una copia de la lista de movimientos
-     *
-     * PISTA: Para crear una copia de una lista:
-     *        return new ArrayList<>(this.movimientos);
-     *
-     * @return copia de la lista de movimientos
-     */
     public List<Movimiento> getMovimientos() {
         return new ArrayList<>(this.movimientos);
     }
@@ -306,32 +274,6 @@ public class CuentaBancaria {
         saldos.put(mov.getDivisa(), nuevoSaldo);
     }
 
-
-    // ============================================================================
-    // MÉTODO toString (útil para debugging)
-    // ============================================================================
-
-    /**
-     * Representación textual de la cuenta.
-     *
-     * TODO: Crear una cadena informativa que incluya:
-     * - IBAN (puede ser solo los primeros y últimos caracteres para brevedad)
-     * - Titular
-     * - Tipo de cuenta
-     * - Estado
-     * - Saldos por divisa (iterar sobre el mapa)
-     *
-     * EJEMPLO de formato sugerido:
-     * "CuentaBancaria[ES12...012, Juan Pérez, CORRIENTE, ACTIVA, Saldos: {EUR=50000, USD=10000}]"
-     *
-     * PISTA: Para mostrar el IBAN abreviado:
-     *        iban.substring(0, 4) + "..." + iban.substring(iban.length()-3)
-     *
-     * PISTA: Para los saldos puedes usar directamente saldos.toString()
-     *        o iterar con un StringBuilder para más control
-     *
-     * @return representación textual de la cuenta
-     */
     @Override
     public String toString() {
         String ibanAbreviado = iban.length() > 7 ?
