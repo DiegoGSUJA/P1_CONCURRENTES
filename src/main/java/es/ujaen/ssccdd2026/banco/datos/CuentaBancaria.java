@@ -1,5 +1,7 @@
 package es.ujaen.ssccdd2026.banco.datos;
 
+//CUIDADO
+
 import static es.ujaen.ssccdd2026.banco.Constantes.*;
 
 import java.util.ArrayList;
