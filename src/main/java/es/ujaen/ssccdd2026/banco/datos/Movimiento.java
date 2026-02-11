@@ -12,7 +12,7 @@ import static es.ujaen.ssccdd2026.banco.Constantes.*;
  * Esto garantiza la integridad del histórico de operaciones y facilitará
  * el trabajo con concurrencia en prácticas futuras.
  *
- * @author [Tu nombre]
+ * @author Diego Gómez Sánchez
  */
 public class Movimiento {
 

@@ -23,7 +23,7 @@ import java.util.Map;
  * Los getters de colecciones devuelven copias defensivas para evitar modificaciones
  * externas no controladas. Esto será crucial cuando trabajemos con múltiples hilos.
  *
- * @author [Tu nombre]
+ * @author Diego Gómez Sánchez
  */
 public class CuentaBancaria {
 
